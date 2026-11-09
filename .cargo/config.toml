@@ -1,0 +1,10 @@
+# Esta máquina não tem o linker do MSVC; usa o rust-lld embutido na toolchain gnullvm.
+[target.x86_64-pc-windows-gnullvm]
+linker = "rust-lld"
+rustflags = ["-C", "linker-flavor=ld.lld", "-C", "link-self-contained=yes",
+  # liga libunwind de forma estática, para o .exe não depender de libunwind.dll
+  "-C", "target-feature=+crt-static",
+  # opengl32, gdi32, shell32 etc. não vêm na toolchain: o lld liga direto nas DLLs do sistema.
+  "-C", "link-arg=-LC:/Windows/System32",
+  # winspool é winspool.drv no Windows; stub vazio, nenhum símbolo é usado.
+  "-C", "link-arg=-Llinklibs"]
